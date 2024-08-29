@@ -156,7 +156,10 @@ void log_call(char* args)
 
     if (sc == 2)
     {
-       
+        if(linearg<1 || linearg>15){
+            printf(RED"Invalid line number\n"RESET);
+            return;
+        }
         int count = line_counter();
         if (linearg > count)
         {
