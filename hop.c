@@ -14,7 +14,23 @@ ll sl_cntr(char* str)
     }
     return cnt;
 }
-char* hop(char* args,char* cwd,char* cur_wd,int is_log)
+void helper(char* args,char* cwd,char* cur_wd,int is_log)
+{
+    char* save3;
+    
+    char* token3=strtok_r(args," ",&save3);
+    int cnt=0;
+   while(token3!=NULL)
+   {
+         char dupl[1000];
+            strcpy(dupl,token3);
+         hop(dupl,cwd,cur_wd,is_log);
+         printf("tokk--->%s   no----> %d\n",token3,cnt++);
+            token3=strtok_r(NULL," ",&save3);
+   }
+   return;
+}
+void hop(char* args,char* cwd,char* cur_wd,int is_log)
 {
      char* copy=(char*)malloc(1000*sizeof(char));
       strcpy(copy,args);
@@ -70,33 +86,46 @@ char* hop(char* args,char* cwd,char* cur_wd,int is_log)
                 else{
                     printf("Error in changing directory\n");
                 }
-                return NULL;
+                return ;
              }
              else{
                   strcpy(prev_wd,p_wd);
                char buff[1000]={0};
-               int ch1= getcwd(buff, sizeof(buff));
+                getcwd(buff, sizeof(buff));
               //  if(fl==1){
               //     strcpy(buff,p_wd);
               //  }
                
-                if(ch1==-1)
-                {
-                      printf("Error in getting current working directory\n");
-                      return NULL;
-                }
+                // if(ch1==-1)
+                // {
+                //       printf("Error in getting current working directory\n");
+                //       return;
+                // }
                 int cnt_cwd=sl_cntr(cwd);
                 int cnt_buff=sl_cntr(buff);
+                
                if(strcmp(buff,cwd)==0){
+                    // printf("1\n");
                      strcpy(cur_wd, "~");
                     getcwd(pr, sizeof(pr));
                     printf("%s\n",pr);
                     
                     // log_entry(cmd);
-                     return cur_wd;
+                     return ;
                }
                else if(cnt_buff>cnt_cwd)
                {
+                  int is_substr=1;
+                for(int i=0;i<strlen(cwd);i++)
+                {
+                    if(cwd[i]!=buff[i])
+                    {
+                        is_substr=0;
+                        break;
+                    }
+                }
+                if(is_substr==1){
+                //   printf("2\n");
                    char dir[1000];
                    int cnt=0;
                    strcpy(cur_wd, "~");
@@ -116,13 +145,21 @@ char* hop(char* args,char* cwd,char* cur_wd,int is_log)
                     // printf("%s\n",pr);
                    printf("%s\n",buff);
                 //   log_entry(cmd);
-                   return cur_wd;
+                   return ;}
+                   else{
+                    //    printf("4\n");
+                       strcpy(cur_wd, buff);
+                       printf("%s\n",cur_wd);
+                    //    log_entry(cmd);
+                       return ;
+                   }
                }
                else if(cnt_buff<=cnt_cwd){
+                    //  printf("3\n");
                    strcpy(cur_wd, buff);
                    printf("%s\n",cur_wd);
                 //    log_entry(cmd);
-                   return cur_wd;
+                   return ;
                }
              }
 }

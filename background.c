@@ -1,5 +1,8 @@
 
 #include "background.h"
+// #include <asm-generic/signal-defs.h>
+#include <signal.h> // Add this line to include the necessary header file
+// #include <asm/signal.h>
 
 BackgroundProcess* head = NULL;
 
@@ -8,7 +11,7 @@ void trim_trailing_whitespace(char *str) {
 
     int len = strlen(str);
     while (len > 0 && isspace((unsigned char)str[len - 1])) {
-       printf("chsar--->%c",str[len--]) ;
+    //    printf("chsar--->%c",str[len--]) ;
     }
     str[len] = '\0';
 }
@@ -63,7 +66,7 @@ void sigchld_handler(int sig) {
 // Function to run a command in the background
 void run_background_command(char* command) {
     trim_trailing_whitespace(command);
-    printf("command--->%s\n",command);
+    // printf("command--->%s\n",command);
     sigset_t sigset;
     sigemptyset(&sigset);
     sigaddset(&sigset, SIGCHLD);
@@ -125,7 +128,16 @@ void process_input(char* input) {
 void main_loop(char* input) {
     // char input[1024];
     signal(SIGCHLD, sigchld_handler);  // Setup the signal handler for SIGCHLD
+     
+    //  printf("input--->%ssssss\n",input);
+      int len = strlen(input);
 
+// Trim trailing spaces
+while (len > 0 && input[len - 1] == ' ') {
+    len--;
+}
+input[len] = '\0';
+    //    printf("after ----> %sguj\n",input);
     run_background_command(input);
 }
 

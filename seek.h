@@ -1,4 +1,6 @@
-#pragma seek
+
+#ifndef SEEK_H
+#define SEEK_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -23,3 +25,4 @@
 #define RED     "\x1b[31m"
 
 void seek(char* args,char*cur,char*par,int is_log);
+#endif

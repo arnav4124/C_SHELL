@@ -1,4 +1,5 @@
-#pragma log
+#ifndef LOG_H
+#define LOG_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -30,4 +31,4 @@ void log_entry(char*str);
 
 void log_call(char* args);
 void log_print();
-     
+#endif  

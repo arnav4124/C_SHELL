@@ -1,7 +1,49 @@
 #include "proclore.h"
 
 
+int is_foreground(pid_t pid) {
+    // Get the process group ID of the target process
+    pid_t pgid = getpgid(pid);
+    if (pgid == -1) {
+        perror("getpgid");
+        return -1;  // Error
+    }
 
+    // Get the terminal device associated with this process
+    char tty_path[256];
+    snprintf(tty_path, sizeof(tty_path), "/proc/%d/fd/0", pid);
+
+    char tty_name[256];
+    ssize_t len = readlink(tty_path, tty_name, sizeof(tty_name) - 1);
+    if (len == -1) {
+        perror("readlink");
+        return -1;  // Error
+    }
+    tty_name[len] = '\0';
+
+    // Open the terminal device
+    int fd = open(tty_name, O_RDONLY);
+    if (fd == -1) {
+        perror("open");
+        return -1;  // Error
+    }
+
+    // Get the foreground process group ID of the terminal
+    pid_t fg_pgid = tcgetpgrp(fd);
+    close(fd);  // Close the file descriptor
+
+    if (fg_pgid == -1) {
+        perror("tcgetpgrp");
+        return -1;  // Error
+    }
+
+    // Compare the process group ID of the process with the terminal's foreground process group ID
+    if (pgid == fg_pgid) {
+        return 1;  // Foreground
+    } else {
+        return 0;  // Background
+    }
+}
 char* checker(char* arg)
 {
   static char buff[10260];
@@ -60,6 +102,12 @@ void proclore(char* args)
     } else {
         strcpy(buffer, "Unknown");
     }
-    printf("pid : %d\nprocess status : %c\nProcess Group : %lld\nVirtual memory : %lld\nExecutable path : %s\n", proc_id,state,pgrp,vm_size,buffer);
-        return;
+    if(!is_foreground(proc_id)){
+    
+    printf("pid : %d\nprocess status : %c\nProcess Group : %d\nVirtual memory : %ld\nExecutable path : %s\n", proc_id,state,pgrp,vm_size,buffer);
+    }
+    else{
+        printf("pid : %d\nprocess status : %c+\nProcess Group : %d\nVirtual memory : %ld\nExecutable path : %s\n", proc_id,state,pgrp,vm_size,buffer);
+    }
+            return;
 }

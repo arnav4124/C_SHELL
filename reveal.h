@@ -1,4 +1,5 @@
-#pragma reveal
+#ifndef REVEAL_H
+#define REVEAL_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -20,3 +21,4 @@ void print_permissions(mode_t mode);
 void print_file_info(const char *path, struct dirent *entry, int show_long);
 void list_directory(const char *path, int show_all, int show_long,char* cmd);
 void main_function(char* args,char* cwd,char* cur_wd,int is_log,char* cmd);
+#endif

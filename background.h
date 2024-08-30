@@ -1,9 +1,14 @@
+#ifndef BACKGROUND_H
+#define BACKGROUND_H
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <sys/types.h>
 #include <string.h>
+#include <errno.h>
+#include <strings.h>
 #include <errno.h>
 #include <ctype.h>
 #define RESET   "\x1b[0m"
@@ -25,3 +30,4 @@ void run_background_command(char* command);
 void process_input(char* input);
 void trim_trailing_whitespace(char *str);
 void main_loop(char* input);
+#endif

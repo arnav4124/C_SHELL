@@ -4,7 +4,8 @@
 #define BLUE    "\x1b[34m"
 #define GREEN   "\x1b[32m"
 #define RED     "\x1b[31m"
-
+ extern fgproc fg[1024];
+  extern  int cnt_fg;
 void sys_call(char* str)
 {
     
@@ -15,14 +16,28 @@ void sys_call(char* str)
     {
         fl=1;
         str[strlen(str)-1]='\0';
-
+       
     }
+
+    char name_proc[1000];
+    for(int i=0;i<strlen(str);i++)
+    {
+        if(str[i]==' ')
+        {
+            break;
+        }
+        name_proc[i]=str[i];
+    }
+    name_proc[strlen(name_proc)]='\0';
     if(fl)
     {
-        printf("back\n");
+        // printf("back\n");
          main_loop(str);
     }
     else{
+        struct timeval start, end;
+        double elapsed_time;
+        gettimeofday(&start, NULL);
     int  ch=fork();
         
     
@@ -65,6 +80,24 @@ void sys_call(char* str)
         if(fl==0)
         {
            int wt= wait(NULL);
+              if(wt<0)
+              {
+                printf(RED"Error in waiting\n"RESET);
+                return;
+              }
+            gettimeofday(&end, NULL);
+             elapsed_time = (end.tv_sec - start.tv_sec) + 
+                               (end.tv_usec - start.tv_usec) / 1000000.0;
+            int rounded = (int)round(elapsed_time);
+            if(rounded>=2){
+                  
+                  if(cnt_fg<1024){
+                     fg[cnt_fg].pid=ch;
+                        strcpy(fg[cnt_fg].name,name_proc);
+                        fg[cnt_fg].time=rounded;
+                        cnt_fg++;
+                  }
+            }
         }
         return;
     }

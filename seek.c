@@ -34,9 +34,16 @@ void seek(char* args,char*cur,char*par,int is_log)
     int found=0;
     while(token!=NULL)
     {
+        printf("token: %s\n",token);
         if(token[0]=='-')
         {
-           if(name_done!=0 || strlen(token)==1){
+           if(strlen(token)==1 && name_done==1)
+           {
+               path=prev_wd;
+               name_done++;
+           }
+           else if(name_done!=1 && strlen(token)==1){
+              printf("ndon---> %d\n",name_done);
                printf(RED"Invalid argument\n"RESET);
                return;}
             for(int i=1;i<strlen(token);i++)

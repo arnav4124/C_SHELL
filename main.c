@@ -28,6 +28,8 @@ char u_name[256];
    char cur_wd[1000];
    char prev_wd[1000];
    int is_log=0;
+   fgproc fg[1024];
+   int cnt_fg=0;
 // void logentr(char* str){
 //    FILE *file = fopen("log.txt", "a+");
 //     if(file==NULL)
@@ -88,23 +90,23 @@ void tok(char* str)
                   char args[1000];
                    char command[1000];
                 if(strcmp(token,"hop")==0){
-                     result=hop(cwd,cwd,cur_wd,0);
+                     hop(cwd,cwd,cur_wd,0);
                 }
                 else{
                  sscanf(token,"%s %[^\n]",command,args);  
                  char arg2[1000];
                  strcpy(arg2,args);
-                result = hop(arg2, cwd, cur_wd,0);
+                 helper(arg2, cwd, cur_wd,0);
                 }
                   
-           if(result == NULL)
-           {
-               printf(RED"Error in changing directory\n"RESET);
-           }
-           else
-           {
-               strcpy(cur_wd, result);
-           }
+        //    if(result == NULL)
+        //    {
+        //        printf(RED"Error in changing directory\n"RESET);
+        //    }
+        //    else
+        //    {
+        //        strcpy(cur_wd, result);
+        //    }
            }
               else if(strncmp(token,"reveal",6)==0){
                      if(strcmp(token,"reveal")==0){
@@ -206,16 +208,42 @@ int main()
        
   
      
-     
-  
-        printf(PINK"<%s@%s:%s>"RESET, pw->pw_name, h_name0,cur_wd);
+        char fg_prefix[1000];
+        int is_prefix=0;
+        if(cnt_fg!=0)
+        {
+            //  for(int i=0;i<cnt_fg;i++)
+            //  {
+            //     if(fg[i].time>2){
+            //         strcat(fg_prefix, fg[i].name);
+            //         strcat(fg_prefix, ": ");
+            //         strcat(fg_prefix, fg[i].time);
+            //         strcat(fg_prefix, " ");
+            //     }
+                
+            //  }
+                is_prefix=1;
+            //  cnt_fg=0;
+        }
+        if(is_prefix==1){
+              printf(PINK"<%s@%s:%s"RESET, pw->pw_name, h_name0,cur_wd);
+              for(int i=0;i<cnt_fg;i++){
+                   printf(PINK"%s: %d "RESET,fg[i].name,fg[i].time);
+              }
+                printf(PINK">"RESET);
+                cnt_fg=0;
+                  }
+        else{
+        printf(PINK"<%s@%s:%s>"RESET, pw->pw_name, h_name0,cur_wd);}
         char* command = (char*)malloc(1000*sizeof(char));
         // char args[1000];
         // strcpy(args, cwd);
          char input[1100];
         if (fgets(input, sizeof(input), stdin) != NULL) {
-   
-            if(strlen(input)==0) continue;
+            int count=0;
+            while(input[count]==' ') count++;
+            if(input[count]=='\n') continue;
+            // if(strlen(input)==0) continue;
             char ip2[2048];
             int cnt=0;
             for(int i=0;i<strlen(input);i++)
@@ -233,7 +261,7 @@ int main()
             }
             ip2[cnt]='\0';
             input[strcspn(input, "\n")] = 0;
-            // printf("input: %s\n", ip2);
+            printf("input: %s\n", ip2);
             // input[strlen(input)-1]='\0';
             // printf("input: %s\n", input);
             char copy[1024];
