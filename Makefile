@@ -1,35 +1,34 @@
+# Makefile
+
 # Compiler
 CC = gcc
 
-# Compiler flags
-CFLAGS =  -std=c99 -O2
+# Compiler flags (no warnings)
+CFLAGS = -w
 
-# List of source files
-SRCS = background.c bgprocess.c check.c hop.c log.c main.c proclore.c queue.c reveal.c seek.c
+# Libraries to link against
+LIBS = -lm
 
-# List of header files (not strictly necessary in this simple case, but listed for clarity)
-HDRS = background.h bgprocess.h hop.h log.h main.h proclore.h queue.h reveal.h seek.h
+# Output executable name
+OUTPUT = program
 
-# Output executable
-TARGET = a.out
+# Source files
+SRCS = $(wildcard *.c)
 
 # Object files
 OBJS = $(SRCS:.c=.o)
 
 # Default target
-all: $(TARGET)
+all: $(OUTPUT)
 
-# Link object files to create the final executable
-$(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS) -lm
+# Rule to link the object files and create the executable
+$(OUTPUT): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
-# Compile each source file into an object file
-%.o: %.c $(HDRS)
+# Rule to compile each source file into an object file
+%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean up generated files
+# Clean up object files and the executable
 clean:
-	rm -f $(OBJS) $(TARGET)
-
-# Phony targets
-.PHONY: all clean
+	rm -f $(OBJS) $(OUTPUT)
