@@ -261,7 +261,7 @@ int main()
             }
             ip2[cnt]='\0';
             input[strcspn(input, "\n")] = 0;
-            printf("input: %s\n", ip2);
+            // printf("input: %s\n", ip2);
             // input[strlen(input)-1]='\0';
             // printf("input: %s\n", input);
             char copy[1024];

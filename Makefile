@@ -10,7 +10,7 @@ CFLAGS = -w
 LIBS = -lm
 
 # Output executable name
-OUTPUT = program
+OUTPUT = a.out
 
 # Source files
 SRCS = $(wildcard *.c)

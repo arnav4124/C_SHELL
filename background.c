@@ -85,9 +85,11 @@ void run_background_command(char* command) {
         // Child process
         sigprocmask(SIG_UNBLOCK, &sigset, NULL);  // Unblock SIGCHLD in child process
         char* args[] = {"/bin/sh", "-c", command, NULL};
-        execvp(args[0], args);
+       if( execvp(args[0], args)==-1){
         perror("exec failed");
-        exit(1);
+        return;
+        
+       }
     } else {
         // Parent process
         int status;
@@ -100,7 +102,12 @@ void run_background_command(char* command) {
         } else {
             // Process finished before it could be added
             if (WIFEXITED(status)) {
-                printf(GREEN"Process %s (PID %d) exited normally with status %d\n"RESET, command, pid, WEXITSTATUS(status));
+                if (WEXITSTATUS(status) == 127) {
+                    printf(RED"Process %s (PID %d) failed to execute\n"RESET, command, pid);
+                } 
+                else {
+                    printf(GREEN"Process %s (PID %d) exited normally with status %d\n"RESET, command, pid, WEXITSTATUS(status));
+                }
             } else if (WIFSIGNALED(status)) {
                 printf(RED"Process %s (PID %d) was terminated by signal %d\n"RESET, command, pid, WTERMSIG(status));
             }

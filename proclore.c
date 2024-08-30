@@ -3,7 +3,7 @@
 
 int is_foreground(pid_t pid) {
     // Get the process group ID of the target process
-    pid_t pgid = getpgid(pid);
+    int pgid = getpgid(pid);
     if (pgid == -1) {
         perror("getpgid");
         return -1;  // Error
@@ -38,7 +38,7 @@ int is_foreground(pid_t pid) {
     }
 
     // Compare the process group ID of the process with the terminal's foreground process group ID
-    if (pgid == fg_pgid) {
+    if (pgid == pid) {
         return 1;  // Foreground
     } else {
         return 0;  // Background

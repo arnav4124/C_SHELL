@@ -1,9 +1,5 @@
 #include "bgprocess.h"
-#define RESET   "\x1b[0m"
-#define WHITE   "\x1b[37m"
-#define BLUE    "\x1b[34m"
-#define GREEN   "\x1b[32m"
-#define RED     "\x1b[31m"
+
  extern fgproc fg[1024];
   extern  int cnt_fg;
 void sys_call(char* str)

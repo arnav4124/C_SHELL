@@ -34,7 +34,7 @@ void seek(char* args,char*cur,char*par,int is_log)
     int found=0;
     while(token!=NULL)
     {
-        printf("token: %s\n",token);
+        // printf("token: %s\n",token);
         if(token[0]=='-')
         {
            if(strlen(token)==1 && name_done==1)
