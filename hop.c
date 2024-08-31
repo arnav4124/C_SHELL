@@ -108,7 +108,7 @@ void hop(char* args,char* cwd,char* cur_wd,int is_log)
                     // printf("1\n");
                      strcpy(cur_wd, "~");
                     getcwd(pr, sizeof(pr));
-                    printf("%s\n",pr);
+                   if(!is_log) printf("%s\n",pr);
                     
                     // log_entry(cmd);
                      return ;
@@ -143,13 +143,13 @@ void hop(char* args,char* cwd,char* cur_wd,int is_log)
                    strcat(cur_wd, dir);
                    getcwd(pr, sizeof(pr));
                     // printf("%s\n",pr);
-                   printf("%s\n",buff);
+                //    printf("%s\n",buff);
                 //   log_entry(cmd);
                    return ;}
                    else{
                     //    printf("4\n");
                        strcpy(cur_wd, buff);
-                       printf("%s\n",cur_wd);
+                     if(!is_log)  printf("%s\n",cur_wd);
                     //    log_entry(cmd);
                        return ;
                    }
@@ -157,7 +157,7 @@ void hop(char* args,char* cwd,char* cur_wd,int is_log)
                else if(cnt_buff<=cnt_cwd){
                     //  printf("3\n");
                    strcpy(cur_wd, buff);
-                   printf("%s\n",cur_wd);
+                  if(!is_log) printf("%s\n",cur_wd);
                 //    log_entry(cmd);
                    return ;
                }

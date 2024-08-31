@@ -7,3 +7,6 @@
 ## Under this if multiple path of directories are specified then i will make the last path as previous directories
 # LOG 
 ## I have hardcoded the location of log file so please use this in my system
+
+# SEEK 
+## Since I am using wsl consider my parent from /mnt/c/Users/dell/Documents as i am not allowed open the parents folders before dell

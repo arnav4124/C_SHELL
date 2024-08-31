@@ -260,9 +260,11 @@ void seek(char* args,char*cur,char*par,int is_log)
                           return;
                      }
               }
-              char buff[1024];
+              char buff[1024]={0};
                  strcpy(prev_wd, copy);
                 getcwd(buff,sizeof(buff));
+                // printf("changed to %s\n",buff);
+                // printf("par: %s\n",par);
                 int  cnt_cwd=sl_cntr(par);
                 int cnt_buff=sl_cntr(buff);
                 if(strcmp(buff,par)==0){
@@ -270,11 +272,24 @@ void seek(char* args,char*cur,char*par,int is_log)
                 }
                 else if(cnt_buff>cnt_cwd)
                 {
-                    char dir[1000];
+                    char dir[1000]={0};
                    int cnt=0;
-                   strcpy(cur_wd, "~");
+                    int fl=1;
+                  for(int i=0;i<strlen(par);i++)
+                  {
+                        if(par[i]!=buff[i])
+                        {
+                            fl=0;
+                            break;
+                        }
+                  }
+                    if(fl){
+                        // strcpy(cur_wd, "~");
+                   strcat(cur_wd, "~");
                   //  printf("buff---->%s\n",buff);
                   //  printf("cwd------>%s\n",cwd);
+                 
+
                    for(int i=strlen(cwd);i<strlen(buff);i++)
                    {
                        dir[cnt]=buff[i];
@@ -284,11 +299,17 @@ void seek(char* args,char*cur,char*par,int is_log)
                    dir[cnt]='\0';
                   //  printf("%s\n",cur_wd);
                   //  printf("dir---->%s   len-->%lld\n",dir,strlen(dir));
-                   strcat(cur_wd, dir);
+                   strcat(cur_wd, dir);}
+                     else{
+                          strcpy(cur_wd,buff);
+                     }
+
                 }
                 else{
                     strcpy(cur_wd,buff);
                 }
+                //  printf("toexe: %s\n",toexe);
+                //  hop(toexe,par,cur,1);
 
                 
 
