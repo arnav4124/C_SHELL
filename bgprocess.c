@@ -15,7 +15,7 @@ void sys_call(char* str)
        
     }
 
-    char name_proc[1000];
+    char name_proc[1000]={0};
     for(int i=0;i<strlen(str);i++)
     {
         if(str[i]==' ')

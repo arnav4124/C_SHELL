@@ -232,6 +232,7 @@ int main()
               }
                 printf(PINK">"RESET);
                 cnt_fg=0;
+                
                   }
         else{
         printf(PINK"<%s@%s:%s>"RESET, pw->pw_name, h_name0,cur_wd);}

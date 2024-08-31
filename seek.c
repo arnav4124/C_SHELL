@@ -9,6 +9,7 @@
 extern char cur_wd[1000];
 extern char prev_wd[1000];
 extern char cwd[1000];
+
 void seek(char* args,char*cur,char*par,int is_log)
 {
     char dup[1024];
@@ -42,10 +43,15 @@ void seek(char* args,char*cur,char*par,int is_log)
                path=prev_wd;
                name_done++;
            }
+           else if(name_done!=0){
+                printf(RED"Invalid argument\n"RESET);
+                return;
+           }
            else if(name_done!=1 && strlen(token)==1){
-              printf("ndon---> %d\n",name_done);
+            //   printf("ndon---> %d\n",name_done);
                printf(RED"Invalid argument\n"RESET);
                return;}
+               else{
             for(int i=1;i<strlen(token);i++)
             {
                 if(token[i]=='d')
@@ -65,6 +71,7 @@ void seek(char* args,char*cur,char*par,int is_log)
                     return;
                 }
             }
+               }
         }
         else{
           

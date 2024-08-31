@@ -53,15 +53,20 @@ void sigchld_handler(int sig) {
     while ((pid = waitpid(-1, &status, WNOHANG)) > 0) {
         char* command = remove_process(pid);
         if (command != NULL) {
-            if (WIFEXITED(status)) {
-                printf("Process %s (PID %d) exited normally with status %d\n", command, pid, WEXITSTATUS(status));
-            } else if (WIFSIGNALED(status)) {
-                printf("Process %s (PID %d) was terminated by signal %d\n", command, pid, WTERMSIG(status));
-            }
+            if(WIFEXITED(status) && WEXITSTATUS(status) != 0) {
+            printf(RED" %s exited abnormally (%d) with signal-Failed to execute %d\n"RED,command, pid, WEXITSTATUS(status));
+        }         
+        else if(WIFSIGNALED(status)){
+            printf(RED"Process %s (PID %d) was terminated by signal %d\n"RESET, command, pid, WTERMSIG(status));
+        }
+        else if(WIFEXITED(status)) {
+            printf(GREEN"Process %s (PID %d) exited normally with status %d\n"RESET, command, pid, WEXITSTATUS(status));
+        }
+        }
             free(command);
         }
     }
-}
+
 
 // Function to run a command in the background
 void run_background_command(char* command) {
@@ -87,7 +92,7 @@ void run_background_command(char* command) {
         char* args[] = {"/bin/sh", "-c", command, NULL};
        if( execvp(args[0], args)==-1){
         perror("exec failed");
-        return;
+        exit(127);
         
        }
     } else {
@@ -111,11 +116,12 @@ void run_background_command(char* command) {
             } else if (WIFSIGNALED(status)) {
                 printf(RED"Process %s (PID %d) was terminated by signal %d\n"RESET, command, pid, WTERMSIG(status));
             }
-        }
+            
 
         // Unblock SIGCHLD
-        sigprocmask(SIG_UNBLOCK, &sigset, NULL);
     }
+        sigprocmask(SIG_UNBLOCK, &sigset, NULL);
+}
 }
 
 // Function to process user input

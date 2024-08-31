@@ -25,7 +25,7 @@ void helper(char* args,char* cwd,char* cur_wd,int is_log)
          char dupl[1000];
             strcpy(dupl,token3);
          hop(dupl,cwd,cur_wd,is_log);
-         printf("tokk--->%s   no----> %d\n",token3,cnt++);
+        //  printf("tokk--->%s   no----> %d\n",token3,cnt++);
             token3=strtok_r(NULL," ",&save3);
    }
    return;
