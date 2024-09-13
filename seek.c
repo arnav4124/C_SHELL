@@ -1,6 +1,6 @@
 #include "seek.h"
 // #include "queue.h"
-
+#include "bgprocess.h"
 #define RESET   "\x1b[0m"
 #define WHITE   "\x1b[37m"
 #define BLUE    "\x1b[34m"
@@ -9,12 +9,15 @@
 extern char cur_wd[1000];
 extern char prev_wd[1000];
 extern char cwd[1000];
-
+extern int cnt_fg;
+extern fgproc fg[1024];
 void seek(char* args,char*cur,char*par,int is_log)
 {
     char dup[1024];
     strcpy(dup,args);
     char* token=strtok(dup," ");
+    time_t start,end;
+    start=time(NULL);
     // char cmd[1024];
     // snprintf(cmd,sizeof(cmd),"seek %[^\n]",args);
     // printf("token : %s\n",token);
@@ -27,7 +30,8 @@ void seek(char* args,char*cur,char*par,int is_log)
     // char* tofull;
     int found_files=0;
     int found_dirs=0;
-    path=cur;
+
+    path=".";
     int name_done=0;
     // printf("fcd---> %s\n",path);
     int cnt=0;
@@ -196,6 +200,19 @@ void seek(char* args,char*cur,char*par,int is_log)
     if(!found)
     {
         printf(RED"No match found\n"RESET);
+        end=time(NULL);
+        int elapsed=end-start;
+        if(elapsed>=2){
+            if(cnt_fg<1024){
+                fg[cnt_fg].pid=getpid();
+                strcpy(fg[cnt_fg].name,"seek");
+                fg[cnt_fg].time=(int)round(elapsed);
+                cnt_fg++;
+            }
+            else{
+                printf(RED"Maximum number of processes reached\n"RESET);
+            }
+        }
         return;
     }
     // printf("efl : %d\n found : %d\n file: %d\n",efl,found,found_files);
@@ -203,7 +220,7 @@ void seek(char* args,char*cur,char*par,int is_log)
     {
          
          if(found_files){
-            printf("File found\n");   
+            // printf("File found\n");   
             // char dup[1024];
             // for(int i=1;i<strlen(toexe);i++)
             // {
@@ -226,6 +243,19 @@ void seek(char* args,char*cur,char*par,int is_log)
                        default:
                        printf(RED"Error in opening file\n"RESET);
                    }
+                   end=time(NULL);
+                     int elapsed=end-start;
+                        if(elapsed>=2){
+                            if(cnt_fg<1024){
+                                fg[cnt_fg].pid=getpid();
+                                strcpy(fg[cnt_fg].name,"seek");
+                                fg[cnt_fg].time=(int)round(elapsed);
+                                cnt_fg++;
+                            }
+                            else{
+                                printf(RED"Maximum number of processes reached\n"RESET);
+                            }
+                        }
                    return;
                 }
                 char line[1024];
@@ -235,6 +265,7 @@ void seek(char* args,char*cur,char*par,int is_log)
                     printf("%s",line);
                     cnt++;
                 }
+               
                 // printf("Lines: %d\n",cnt);
                 fclose(file);
          }
@@ -257,6 +288,19 @@ void seek(char* args,char*cur,char*par,int is_log)
                           break;
                           default:
                           printf(RED"Error in changing directory\n"RESET);
+                          end=time(NULL);
+                            int elapsed=end-start;
+                            if(elapsed>=2){
+                                if(cnt_fg<1024){
+                                    fg[cnt_fg].pid=getpid();
+                                    strcpy(fg[cnt_fg].name,"seek");
+                                    fg[cnt_fg].time=(int)round(elapsed);
+                                    cnt_fg++;
+                                }
+                                else{
+                                    printf(RED"Maximum number of processes reached\n"RESET);
+                                }
+                            }
                           return;
                      }
               }
@@ -312,11 +356,23 @@ void seek(char* args,char*cur,char*par,int is_log)
                 //  hop(toexe,par,cur,1);
 
                 
-
+                     
                 // cur
             }
-
+         
     }
-    
-
+    end=time(NULL);
+    int elapsed=end-start;
+    if(elapsed>=2){
+        if(cnt_fg<1024){
+            fg[cnt_fg].pid=getpid();
+            strcpy(fg[cnt_fg].name,"seek");
+            fg[cnt_fg].time=(int)round(elapsed);
+            cnt_fg++;
+        }
+        else{
+            printf(RED"Maximum number of processes reached\n"RESET);
+        }
+    }
+    return;
 }

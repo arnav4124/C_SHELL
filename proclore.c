@@ -2,14 +2,14 @@
 
 
 int is_foreground(pid_t pid) {
-    // Get the process group ID of the target process
+    
     int pgid = getpgid(pid);
     if (pgid == -1) {
         perror("getpgid");
         return -1;  // Error
     }
 
-    // Get the terminal device associated with this process
+
     char tty_path[256];
     snprintf(tty_path, sizeof(tty_path), "/proc/%d/fd/0", pid);
 
@@ -17,31 +17,31 @@ int is_foreground(pid_t pid) {
     ssize_t len = readlink(tty_path, tty_name, sizeof(tty_name) - 1);
     if (len == -1) {
         perror("readlink");
-        return -1;  // Error
+        return -1;  
     }
     tty_name[len] = '\0';
 
-    // Open the terminal device
+    
     int fd = open(tty_name, O_RDONLY);
     if (fd == -1) {
         perror("open");
-        return -1;  // Error
+        return -1;  
     }
 
-    // Get the foreground process group ID of the terminal
+   
     pid_t fg_pgid = tcgetpgrp(fd);
-    close(fd);  // Close the file descriptor
+    close(fd);  
 
     if (fg_pgid == -1) {
         perror("tcgetpgrp");
-        return -1;  // Error
+        return -1;  
     }
 
-    // Compare the process group ID of the process with the terminal's foreground process group ID
-    if (pgid == pid) {
-        return 1;  // Foreground
+   
+    if (pgid == pid&& fg_pgid == pgid) {
+        return 1;  
     } else {
-        return 0;  // Background
+        return 0;  
     }
 }
 char* checker(char* arg)

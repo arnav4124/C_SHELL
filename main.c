@@ -17,12 +17,17 @@
 #include <string.h>
 #include "log.h"
 #include "proclore.h"
+#include "fgbg.h"
+#include "pio.h"
+#include "iman.h"
 char* qu[15];
   int l=0;
   int r=0;
   int cnt;
 // #include <sys/wait.h>
 char u_name[256];
+pid_t fg_pid = -1;
+  char fg_name[1000]={0};
  char h_name0[256];
   char cwd[1024];
    char cur_wd[1000];
@@ -30,6 +35,35 @@ char u_name[256];
    int is_log=0;
    fgproc fg[1024];
    int cnt_fg=0;
+   int stdin_global;
+    int stdout_global;
+    BackgroundProcess* head = NULL;
+      void sigint_handler(int sig) {
+    if (fg_pid != -1) {
+        // printf("\nInterrupting foreground process %d\n", fg_pid);
+        kill(fg_pid, SIGINT); // Send SIGINT to the foreground process
+
+    } else {
+        printf("\n");
+    }
+}
+void sigtstp_handler(int sig) {
+    // printf("gotcha\n");
+    // int stdin_ba
+    if (fg_pid != -1) {  
+        printf("\nStopping foreground process %d\n", fg_pid);
+        if(kill(fg_pid, SIGSTOP)==-1){
+            printf("Error in stopping process\n");
+        }
+        // printf("4r4t5\n");
+        add_process(fg_pid, fg_name, "Stopped");
+        fg_pid = -1; 
+        return;
+    } else {
+        // printf("errrrrrrr\n");
+        printf("\n");
+    }
+}
 // void logentr(char* str){
 //    FILE *file = fopen("log.txt", "a+");
 //     if(file==NULL)
@@ -73,98 +107,65 @@ void tok(char* str)
         while(token!=NULL)
         {
         //    char command[1000];
+            while (*token == ' '||*token=='\t') token++;
+            char* end = token + strlen(token) - 1;
+            while (end > token && (*end == ' '||*end=='\t')) end--;
+            *(end + 1) = '\0';
            int done=0;
         //    char args[1000];
            char b[1000];
            char cpy[1024];
            strcpy(cpy,token);
-                            getcwd(b,sizeof(b));
-        while (*token == ' ') token++;
-            char* end = token + strlen(token) - 1;
-            while (end > token && *end == ' ') end--;
-            *(end + 1) = '\0';
-           if(strncmp(token,"hop",3)==0)
-           {
-                
-                 char* result;
-                  char args[1000];
-                   char command[1000];
-                if(strcmp(token,"hop")==0){
-                     hop(cwd,cwd,cur_wd,0);
-                }
-                else{
-                 sscanf(token,"%s %[^\n]",command,args);  
-                 char arg2[1000];
-                 strcpy(arg2,args);
-                 helper(arg2, cwd, cur_wd,0);
-                }
-                  
-        //    if(result == NULL)
-        //    {
-        //        printf(RED"Error in changing directory\n"RESET);
-        //    }
-        //    else
-        //    {
-        //        strcpy(cur_wd, result);
-        //    }
-           }
-              else if(strncmp(token,"reveal",6)==0){
-                     if(strcmp(token,"reveal")==0){
-                         main_function(b,b,cwd,0,cpy);
-                     }
-                     else{
-                         char args[1000];
-                         char command[1000];
-                         
-                         sscanf(token,"%s %[^\n]",command,args);
-                         main_function(args,b,cwd,0,cpy);
-                     }
-              }
-                else if(strncmp(token,"seek",4)==0)
-                {
-                    if(strcmp(token,"seek")==0){
-                        printf("Error: No arguments provided\n");
-                    }
-                    else{
-                        char args[1000];
-                        char command[1000];
-                        sscanf(token,"%s %[^\n]",command,args);
-                        seek(args,b,cwd,0);
-                    }
-                }
-                else if(strncmp(token,"log",3)==0 && done==0)
-                {
-                    if(strcmp(token,"log")==0){
-                        log_print();
-                        is_log=1;
-                        done=1;
-                    }
-                    else{
-                         is_log=1;
-                         char args[1000];
-                        char command[1000];
-                        sscanf(token,"%s %[^\n]",command,args);
-
-                         log_call(args);
-                    }
-                  
-                }
-                else if(strncmp(token,"proclore",8)==0)
-                {
-                     proclore(cpy);
-                }
-                else {
-                    if(done==0){
-                    char buff[1000];
-                    strcpy(buff, token);
-                    sys_call(buff);}
-                }
+           char cpy_io[1024];
+              strcpy(cpy_io,token);
+            if(strstr(cpy_io,"|")){
+                  execute_pipeline(cpy_io,cwd,cur_wd);
+                  token=strtok_r(NULL,";",&save);
+                  continue;
+            }
+            else{
+            int is_IO=execute_command(cpy_io,cur_wd,cwd);
+            if (is_IO) {
+                 token=strtok_r(NULL,";",&save);
+                 continue;}
+                            getcwd(b,sizeof(b));}
+       
+            
+       
             token=strtok_r(NULL,";",&save);
         }
 }
 int main()
 {
-  
+      stdin_global=dup(STDIN_FILENO);
+    stdout_global=dup(STDOUT_FILENO);
+    struct sigaction sa;
+    sa.sa_handler = &sigchld_handler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART;
+    if (sigaction(SIGCHLD, &sa, NULL) == -1) {
+        perror("sigaction");
+        exit(EXIT_FAILURE);
+    }
+    struct sigaction sa2;
+    sa2.sa_handler = &sigtstp_handler;
+    sigemptyset(&sa2.sa_mask);
+    sa2.sa_flags = SA_RESTART;
+    if(sigaction(SIGTSTP, &sa2, NULL) == -1) {
+        perror("sigaction");
+        exit(EXIT_FAILURE);
+    }
+    struct sigaction sa3;
+    sa3.sa_handler = &sigint_handler;
+    sigemptyset(&sa3.sa_mask);
+    sa3.sa_flags = SA_RESTART; // Use default flags
+    if (sigaction(SIGINT, &sa3, NULL) == -1) {
+        perror("sigaction");
+        exit(EXIT_FAILURE);
+    }
+
+     
+
 //   int ch2=getlogin_r(u_name, sizeof(u_name));
 //   {
 //         if(ch2==-1)
@@ -239,13 +240,23 @@ int main()
         char* command = (char*)malloc(1000*sizeof(char));
         // char args[1000];
         // strcpy(args, cwd);
-         char input[1100];
+         char input[1100]={0};
         if (fgets(input, sizeof(input), stdin) != NULL) {
+            
+        
             int count=0;
             while(input[count]==' ') count++;
             if(input[count]=='\n') continue;
             // if(strlen(input)==0) continue;
-            char ip2[2048];
+             if(ch_amper(input)) {
+                // printf("tehhhh\n");
+                // tok(input); }
+             }
+             else{
+                printf(RED"Error: Syntax Error\n"RESET);
+                continue;
+             }
+            char ip2[2048]={0};
             int cnt=0;
             for(int i=0;i<strlen(input);i++)
             {
@@ -270,8 +281,8 @@ int main()
             // printf("copy: %s\n", copy);
             // if(strcmp(input,"log")!=0)  {
             //     logentr(input);}
-             tok(ip2); 
-
+            
+           tok(ip2);
           if(!is_log)  {
             log_entry(copy);
             }
@@ -319,6 +330,15 @@ int main()
         // printf("%s",args);
         
     }
+    else{
+         if (feof(stdin)) {
+            printf("\n Exiting...\n");
+            // kill_all();
+            // free(command);
+            break;
+        } 
+    }
 
 }
+  return 0;
 }
