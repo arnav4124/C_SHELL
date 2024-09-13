@@ -62,44 +62,44 @@ void iman(char* args) {
     int bytes_received;
     int header_end = 0;
 
-    // Check if there is a command-line argument, otherwise prompt for input
+   
     
      if(strlen(sec_no)>0){
         snprintf(path_template, sizeof(path_template), "/?topic=%s&section=%s", command_name,sec_no);
         // snprintf(path, sizeof(path), path_template, command_name,sec_no);
         strcpy(path,path_template);
     }
-    // Format the path with the user-provided command name
+   
     else{
     snprintf(path, sizeof(path), path_template, command_name);}
     //  printf("path: %s\n",path);
-    // Create a socket
+   
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd < 0) {
         perror("socket");
         return ;
     }
 
-    // Get server information
+ 
     server = gethostbyname(hostname);
     if (server == NULL) {
         fprintf(stderr, "Error: No such host\n");
         return ;
     }
 
-    // Set up server address struct
+   
     bzero((char *)&server_addr, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
     bcopy((char *)server->h_addr_list[0], (char *)&server_addr.sin_addr.s_addr, server->h_length);
     server_addr.sin_port = htons(80);
 
-    // Connect to server
+
     if (connect(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
         perror("connect");
         return ;
     }
 
-    // Send HTTP GET request
+ 
     snprintf(buffer, sizeof(buffer),
              "GET %s HTTP/1.1\r\n"
              "Host: %s\r\n"
@@ -111,10 +111,10 @@ void iman(char* args) {
         return ;
     }
 
-    // Open file to save response
+ 
    
 
-    // Receive the response
+   
     char html[BUFFER_SIZE] = {0};
     int total_received = 0;
     int fl2=0;
@@ -140,13 +140,6 @@ void iman(char* args) {
     
     close(sockfd);
 
-    // Open file to extract content
-    
-
-    // Read the file content into a buffer
-    
-
-    // Extract and print content within <strong> tags
    
     
     // while(fgets(line, sizeof(line), file))
