@@ -27,6 +27,8 @@
 ## for implementing the two functions mentioned type the name of the custom function followed by an = sign and then type the the commands line by line starting with an { and closing with an }
 ## I am supporting only one argumented commands for my custom functions
 ## You can create any one argumented function in my file
+# Activities 
+## In activities I have sorted  according to name of the process
 
 
 
