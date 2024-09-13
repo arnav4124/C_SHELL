@@ -3,7 +3,7 @@
 #include <string.h>
 #include "queue.h"
 
-// Function to create and initialize a new queue
+
 Queue* createQueue() {
     Queue* queue = (Queue*)malloc(sizeof(Queue));
     if (queue == NULL) {
@@ -14,7 +14,7 @@ Queue* createQueue() {
     return queue;
 }
 
-// Function to add a string to the queue
+
 void enqueue(Queue* queue, const char* item) {
     Node* newNode = (Node*)malloc(sizeof(Node));
     if (newNode == NULL) {
@@ -22,7 +22,7 @@ void enqueue(Queue* queue, const char* item) {
         exit(EXIT_FAILURE);
     }
 
-    // Copy the string into the node's data field
+   
     strncpy(newNode->data, item, MAX_STRING_LENGTH - 1);
     newNode->data[MAX_STRING_LENGTH - 1] = '\0';  // Ensure null termination
     newNode->next = NULL;
@@ -36,7 +36,7 @@ void enqueue(Queue* queue, const char* item) {
     queue->rear = newNode;
 }
 
-// Function to remove a string from the queue
+
 char* dequeue(Queue* queue) {
     if (queue->front == NULL) {
         fprintf(stderr, "Queue is empty\n");
@@ -50,7 +50,7 @@ char* dequeue(Queue* queue) {
         exit(EXIT_FAILURE);
     }
     
-    // Copy the string from the node to return it
+
     strncpy(item, temp->data, MAX_STRING_LENGTH);
     queue->front = queue->front->next;
 
@@ -62,12 +62,12 @@ char* dequeue(Queue* queue) {
     return item;
 }
 
-// Function to check if the queue is empty
+
 int isQueueEmpty(Queue* queue) {
     return queue->front == NULL;
 }
 
-// Function to free the queue
+
 void freeQueue(Queue* queue) {
     while (!isQueueEmpty(queue)) {
         free(dequeue(queue));
