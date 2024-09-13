@@ -13,14 +13,20 @@
 
 # IO REDIRECTION AND PIPES 
 ## Please give space separeated commands for pipes and redirection symbols "<",">",">>"
-
+# Activities
+## I am storing full command name example - sleep 5 as its name in my list
 # Aliases and Custom Functions
 ## I have hardcoded the file so please run on my system as I am using WSL
 ## I have assumed & to be applied on the command just preceding it
-
+## Assumptions
 ## Default Value for neonate time argument-5 secs(if no argument is specified)
 ## My fg_proc struct array which information about time elapsed in fg processes have max value of 1024!!!
 ## I am doing nothing if we enter just ;
+# .mysrc
+## for defining aliases just type the alias name followed by an = and then followed by the real command to be replaced
+## for implementing the two functions mentioned type the name of the custom function followed by an = sign and then type the real command separated by ; in sequential order for arguments type $
+## I am supporting only one argumented commands for my custom functions
+## You can create any one argumented function in my file
 
 
 
