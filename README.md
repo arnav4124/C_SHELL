@@ -24,7 +24,7 @@
 ## I am doing nothing if we enter just ;
 # .mysrc
 ## for defining aliases just type the alias name followed by an = and then followed by the real command to be replaced
-## for implementing the two functions mentioned type the name of the custom function followed by an = sign and then type the real command separated by ; in sequential order for arguments type $
+## for implementing the two functions mentioned type the name of the custom function followed by an = sign and then type the the commands line by line starting with an { and closing with an }
 ## I am supporting only one argumented commands for my custom functions
 ## You can create any one argumented function in my file
 

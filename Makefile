@@ -4,7 +4,7 @@
 CC = gcc
 
 # Compiler flags (no warnings)
-CFLAGS = -w
+CFLAGS = -w -g
 
 # Libraries to link against
 LIBS = -lm

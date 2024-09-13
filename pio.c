@@ -57,7 +57,7 @@ int ch_amper(char* str){
 }
 char* check_alias(char *cmd){
     FILE *fp;
-    fp=fopen("/mnt/c/Users/dell/Documents/mini-project-1-arnav4124/.mysrc","r");
+    fp=fopen("/mnt/c/Users/dell/Desktop/mini-project-1-arnav4124/.mysrc","r");
     char line[1000];
     while(fgets(line,1000,fp)!=NULL){
         char *save89;
@@ -70,7 +70,7 @@ char* check_alias(char *cmd){
 
 }
 char* check_func(char* cmd1, char* cmd2) {
-    FILE *fp = fopen("/mnt/c/Users/dell/Documents/mini-project-1-arnav4124/.mysrc", "r");
+    FILE *fp = fopen("/mnt/c/Users/dell/Desktop/mini-project-1-arnav4124/.mysrc", "r");
     if (!fp) {
         printf("Error opening file\n");
         return NULL;
@@ -82,24 +82,31 @@ char* check_func(char* cmd1, char* cmd2) {
         char *token89 = strtok_r(line, "=", &save89);
         
         if (strcmp(token89, cmd1) == 0) {
-            token89 = strtok_r(NULL, "=", &save89);
-            
-            if (token89[strlen(token89) - 1] == '\n') {
-                token89[strlen(token89) - 1] = '\0';  
-            }
-
+            char bu2[1000]={0};
             char* func = (char*)malloc(1000);
             func[0] = '\0';  
-
-            for (int i = 0; i < strlen(token89); i++) {
-                if (token89[i] == '$') {
-                    strcat(func, cmd2);  
-                } else {
-                    char temp[2] = {token89[i], '\0'};
-                    strcat(func, temp);
+            int open_brace = 0;
+            while (fgets(bu2, sizeof(bu2), fp) != NULL) {
+               if(bu2[0]=='}'){
+                   break;
                 }
+                if(bu2[0]!='{'){
+                    strcat(func,bu2);
+                    if(bu2[strlen(bu2)-1]=='\n'){
+                        func[strlen(func)-1]='\0';
+                    }
+                    int i=0;
+                    for( i=0;i<strlen(func);i++){
+                        if(func[i]=='$'){
+                           break;
+                        }
+                    }
+                    func[i]='\0';
+                    strcat(func,cmd2);
+                    strcat(func,";");
+                }
+                
             }
-
             fclose(fp);
               // Close the file
               if(func[strlen(func)-1]=='\n'){
@@ -238,6 +245,7 @@ int execute_command(char *cmd, char *cur_wd, char *cwd) {
         strcpy(cpy1,args[0]);
         char cpy2[1000]={0};
         strcpy(cpy2,args[1]);
+        // printf("cpy1: %s\n",cpy1);
         char* check=check_func(cpy1,cpy2);
         if(check!=NULL){
             char alias[1000]={0};
@@ -246,6 +254,9 @@ int execute_command(char *cmd, char *cur_wd, char *cwd) {
            if(alias[strlen(alias)-1]=='\n') alias[strlen(alias)-1]='\0';
             done=1;
             tok(alias);
+        }
+        else{
+            // printf("niluu\n");
         }
     }
    

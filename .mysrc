@@ -2,5 +2,14 @@ reveall=reveal -l
 home=hop ~
 parent=hop ..
 reveaparll=reveal -l ..
-mk_hop=mkdir $;hop $ 
-hop_seek=hop $;seek $
+mk_hop=
+{
+    mkdir $
+    hop $ 
+}
+hop_seek=
+{
+    hop $
+    seek $
+}
+revhome=reveal -l ~
