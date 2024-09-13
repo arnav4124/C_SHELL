@@ -333,7 +333,7 @@ int main()
     else{
          if (feof(stdin)) {
             printf("\n Exiting...\n");
-            // kill_all();
+            kill_all();
             // free(command);
             break;
         } 

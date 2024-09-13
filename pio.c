@@ -17,7 +17,7 @@
 // Function prototypes for custom commands
 // void hop(char *cwd, char *dest, char *cur_wd, int flag);
 // void helper(char *args, char *cwd, char *cur_wd, int flag);
-// void seek(char *args, char *cur_wd, char *cwd, int flag);
+// void seek(char *args, char *cur_wd, char *cwd, int flag);k
 // void main_function(char *arg, char *cur_wd, char *cwd, int flag, char *cmd);
 // void log_print(void);
 // void log_call(char *args);
