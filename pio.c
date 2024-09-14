@@ -58,6 +58,10 @@ int ch_amper(char* str){
 char* check_alias(char *cmd){
     FILE *fp;
     fp=fopen("/mnt/c/Users/dell/Desktop/mini-project-1-arnav4124/.mysrc","r");
+    if(!fp){
+        printf("Error opening file\n");
+        return NULL;
+    }
     char line[1000];
     while(fgets(line,1000,fp)!=NULL){
         char *save89;
@@ -71,6 +75,10 @@ char* check_alias(char *cmd){
 }
 char* check_func(char* cmd1, char* cmd2) {
     FILE *fp = fopen("/mnt/c/Users/dell/Desktop/mini-project-1-arnav4124/.mysrc", "r");
+    if(!fp){
+        printf("Error opening file\n");
+        return NULL;
+    }
     if (!fp) {
         printf("Error opening file\n");
         return NULL;

@@ -14,16 +14,37 @@ void fg_call(char* pid){
     strcpy(buf,name);
     // printf("fg_name is %s\n",fg_name);
     remove_process(pid_int);}
-    signal(SIGTTOU, SIG_DFL);
-    signal(SIGTTIN, SIG_DFL);
+    
     int pgid = getpgid(pid_int);
     int shellpgid = getpgid(0);
      struct timeval start, end;
         double elapsed_time;
 
         gettimeofday(&start, NULL);
-        if (tcsetpgrp(0, pgid) == -1)
-        printf(RED "Error moving process to foreground.\n"RESET);
+        signal(SIGTTOU, SIG_IGN);
+        signal(SIGTTIN, SIG_IGN);
+        if (tcsetpgrp(0, pgid) == -1){
+        // printf(RED "Error moving process to foreground.\n"RESET);
+        // switch(errno){
+        //     case EACCES:
+        //         printf(RED "Permission denied\n"RESET);
+        //         break;
+        //     case EINVAL:
+        //         printf(RED "Invalid argument\n"RESET);
+        //         break;
+        //     case EPERM:
+        //         printf(RED "Operation not permitted\n"RESET);
+        //         break;
+        //     case ESRCH:
+        //         printf(RED "No such process found\n"RESET);
+        //         break;
+        //     default:
+        //         printf(RED "Error moving process to foreground.\n"RESET);
+        //         break;
+        // }
+        }
+        signal(SIGTTOU, SIG_DFL);
+    signal(SIGTTIN, SIG_DFL);
    int ki= kill(pid_int,SIGCONT);
     if(ki==-1)
     {
