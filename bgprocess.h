@@ -26,4 +26,6 @@ typedef struct fgproc{
     }fgproc;
 
 void sys_call(char* str);
+void sigint_handler(int sig);
+void sigtstp_handler(int sig);
 #endif
